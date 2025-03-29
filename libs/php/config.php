@@ -13,24 +13,37 @@
 	$cd_user = "root";
 	$cd_password = "";
 
-	$uri = "mysql://avnadmin:AVNS_hNeqpNL5YGwnjYtjohY@mysql-2a27a3ec-haroonkhan120704-c853.b.aivencloud.com:26124/defaultdb?ssl-mode=REQUIRED";
 
-	$fields = parse_url($uri);
-	
-	// build the DSN including SSL settings
-	$conn = "mysql:";
-	$conn .= "host=" . $fields["host"];
-	$conn .= ";port=" . $fields["port"];;
-	$conn .= ";dbname=defaultdb";
-	$conn .= ";sslrootcert=" . __DIR__ . "/../ca.pem";
 
+// Production dont worry about code above
+
+	// $host = "svc-3482219c-a389-4079-b18b-d50662524e8a-shared-dml.aws-virginia-6.svc.singlestore.com";
+	// $port = 3333;
+	// $dbname = "db_haroon_5c8d4";
+	// $username = "haroon-f667e";
+	// $password = "kbuzdODaQVS1YkdnuZEcm28wJkd0lcB7";
+	$host = "svc-3482219c-a389-4079-b18b-d50662524e8a-shared-dml.aws-virginia-6.svc.singlestore.com";
+	$port = 3333;
+	$user = "haroon-f667e";
+	$password = "kbuzdODaQVS1YkdnuZEcm28wJkd0lcB7";
+	$db = "db_haroon_5c8d4";
 	
-	try {
-	  $db = new PDO($conn, $fields["user"], $fields["pass"]);
+	// Path to SSL certificate
+	$ssl_ca = __DIR__ . "/singlestore_bundle.pem";
 	
-	  $stmt = $db->query("SELECT VERSION()");
-	  print($stmt->fetch()[0]);
-	} catch (Exception $e) {
-	  echo "Error: " . $e->getMessage();
+	// Create MySQLi connection
+	$mysqli = mysqli_init();
+	
+	// Set the SSL parameters
+	$mysqli->ssl_set(null, null, $ssl_ca, null, null);
+	
+	// Attempt to connect to the database
+	if ($mysqli->real_connect($host, $user, $password, $db, $port)) {
+		echo "✅ Successfully connected to the database!";
+	} else {
+		die("❌ MySQLi Connection Error: " . $mysqli->connect_error);
 	}
+	
+	$mysqli->close();
 ?>
+
