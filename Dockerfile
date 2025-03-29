@@ -4,11 +4,12 @@ FROM php:8.2-apache
 # Set working directory
 WORKDIR /var/www/html
 
-# Install necessary packages
+# Install necessary system packages
 RUN apt-get update && apt-get install -y \
+    curl \
     libcurl4-openssl-dev \
     libssl-dev \
-    libmysqlclient-dev \
+    default-mysql-client \
     unzip \
     && docker-php-ext-install pdo_mysql mysqli \
     && rm -rf /var/lib/apt/lists/*
