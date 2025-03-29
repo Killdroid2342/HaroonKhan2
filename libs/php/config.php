@@ -51,25 +51,19 @@
 	$password = "kbuzdODaQVS1YkdnuZEcm28wJkd0lcB7";
 	$db = "db_haroon_5c8d4";
 	$ssl_ca = __DIR__ . "/singlestore_bundle.pem";
-	
+
 	try {
-		$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
+
+	    $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
 	
-		$options = [
-			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-		];
-	
-		// Check if SSL is required
-		if (file_exists($ssl_ca)) {
-			$options[PDO::MYSQL_ATTR_SSL_CA] = $ssl_ca;
-		} else {
-			echo "⚠️ Warning: SSL CA file not found, trying without SSL.\n";
-		}
-	
-		$pdo = new PDO($dsn, $user, $password, $options);
-		echo "✅ Successfully connected to SingleStore!";
+	    $pdo = new PDO($dsn, $user, $password, [
+	        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+	        PDO::MYSQL_ATTR_SSL_CA => $ssl_ca
+	    ]);
+
+	    echo "✅ Successfully connected to the database!";
 	} catch (PDOException $e) {
-		echo "❌ Connection failed: " . $e->getMessage();
+	    echo "❌ Connection failed: " . $e->getMessage();
 	}
 ?>
 
