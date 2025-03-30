@@ -73,75 +73,95 @@
 	header('Access-Control-Allow-Origin: *');
 	header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 	header('Access-Control-Allow-Headers: Content-Type');
-
+	
 	// Enable error reporting
 	ini_set('display_errors', 'On');
 	error_reporting(E_ALL);
-
+	
 	$executionStartTime = microtime(true);
-
+	
 	// Include the correct config file
 	require_once __DIR__ . "/config.php";
-
-	// Ensure correct header type
-	// header('Content-Type: application/json; charset=UTF-8');
-
-	// Use correct variable names from config.php
-	$conn = new mysqli($host, $user, $password, $db, $port, MYSQLI_CLIENT_SSL);
-	$conn->ssl_set(NULL, NULL, '../../../singlestore_bundle.pem', NULL, NULL);
-
-	if ($conn->connect_errno) {
-	    $output = [
-	        "status" => [
-	            "code" => "300",
-	            "name" => "failure",
-	            "description" => "database unavailable",
-	            "returnedIn" => (microtime(true) - $executionStartTime) / 1000 . " ms"
-	        ],
-	        "data" => []
-	    ];
 	
-	    echo json_encode($output);
-	    exit;
+	// Ensure correct header type
+	header('Content-Type: application/json; charset=UTF-8');
+	
+	// Create a MySQL connection **without** MYSQLI_CLIENT_SSL
+	$conn = new mysqli($host, $user, $password, $db, $port);
+	
+	// Apply SSL settings **before** reconnecting
+	$certPath = realpath(__DIR__ . '/../../../singlestore_bundle.pem');
+	if (!$certPath) {
+		die(json_encode(["error" => "SSL certificate not found at expected path"]));
 	}
-
+	
+	$conn->ssl_set(NULL, NULL, $certPath, NULL, NULL);
+	
+	// Now, reconnect using SSL
+	$conn->real_connect($host, $user, $password, $db, $port, NULL, MYSQLI_CLIENT_SSL);
+	
+	// Check if SSL is enabled
+	$result = $conn->query("SHOW STATUS LIKE 'Ssl_cipher'");
+	$sslCipher = $result->fetch_assoc()['Value'] ?? null;
+	
+	if (!$sslCipher) {
+		die(json_encode(["error" => "SSL connection failed! Please check the CA bundle path and server settings."]));
+	}
+	
+	error_log("✅ SSL connection established using cipher: " . $sslCipher);
+	
+	if ($conn->connect_errno) {
+		$output = [
+			"status" => [
+				"code" => "300",
+				"name" => "failure",
+				"description" => "database unavailable",
+				"returnedIn" => (microtime(true) - $executionStartTime) / 1000 . " ms"
+			],
+			"data" => []
+		];
+	
+		echo json_encode($output);
+		exit;
+	}
+	
 	// Correct SQL query
 	$query = 'SELECT id, firstName, lastName, jobTitle, email, departmentID FROM personnel ORDER BY lastName, firstName';
 	$result = $conn->query($query);
-
+	
 	if (!$result) {
-	    $output = [
-	        "status" => [
-	            "code" => "400",
-	            "name" => "executed",
-	            "description" => "query failed"
-	        ],
-	        "data" => []
-	    ];
-
-	    echo json_encode($output);
-	    exit;
+		$output = [
+			"status" => [
+				"code" => "400",
+				"name" => "executed",
+				"description" => "query failed"
+			],
+			"data" => []
+		];
+	
+		echo json_encode($output);
+		exit;
 	}
-
+	
 	// Fetch and store results
 	$data = [];
 	while ($row = $result->fetch_assoc()) {
-	    $data[] = $row;
+		$data[] = $row;
 	}
-
+	
 	// Success response
 	$output = [
-	    "status" => [
-	        "code" => "200",
-	        "name" => "ok",
-	        "description" => "success",
-	        "returnedIn" => (microtime(true) - $executionStartTime) / 1000 . " ms"
-	    ],
-	    "data" => $data
+		"status" => [
+			"code" => "200",
+			"name" => "ok",
+			"description" => "success",
+			"returnedIn" => (microtime(true) - $executionStartTime) / 1000 . " ms"
+		],
+		"data" => $data
 	];
-
+	
 	$conn->close();
-
+	
 	echo json_encode($output);
 
 ?>
