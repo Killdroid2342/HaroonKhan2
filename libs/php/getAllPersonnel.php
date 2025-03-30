@@ -84,10 +84,10 @@
 	require_once __DIR__ . "/config.php";
 
 	// Ensure correct header type
-	header('Content-Type: application/json; charset=UTF-8');
+	// header('Content-Type: application/json; charset=UTF-8');
 
 	// Use correct variable names from config.php
-	$conn = new mysqli($host, $user, $password, $db, $port, NULL, MYSQLI_CLIENT_SSL);
+	$conn = new mysqli($host, $user, $password, $db, $port, MYSQLI_CLIENT_SSL);
 	$conn->ssl_set(NULL, NULL, '../../../singlestore_bundle.pem', NULL, NULL);
 
 	if ($conn->connect_errno) {
