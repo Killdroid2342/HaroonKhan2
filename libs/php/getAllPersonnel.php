@@ -85,7 +85,7 @@
 
 	
 	// Define SSL certificate path
-	$certPath = realpath(__DIR__ . './singlestore_bundle.pem');
+	$certPath = realpath(__DIR__ . '../../../singlestore_bundle.pem');
 	
 	if (!$certPath) {
 		die(json_encode(["error" => "SSL certificate not found at expected path."]));
