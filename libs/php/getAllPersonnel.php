@@ -87,10 +87,6 @@
 	// Define SSL certificate path
 	$certPath = realpath(__DIR__ . '../../../singlestore_bundle.pem');
 	
-	if (!$certPath) {
-		die(json_encode(["error" => "SSL certificate not found at expected path."]));
-	}
-	
 	// Create a MySQL connection with SSL
 	$conn = new mysqli($host, $user, $password, $db, $port, MYSQLI_CLIENT_SSL);
 	
