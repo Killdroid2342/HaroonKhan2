@@ -24,7 +24,7 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
 # Copy SSL certificates (Make sure you have these in your project)
-COPY singlestore_bundle.pem /etc/ssl/certs/singlestore_bundle.pem
+COPY singlestore_bundle.pem ./singlestore_bundle.pem
 
 # Expose ports
 EXPOSE 80 443
