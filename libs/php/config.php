@@ -50,7 +50,8 @@
 	$user = "haroon-f667e";
 	$password = "kbuzdODaQVS1YkdnuZEcm28wJkd0lcB7";
 	$db = "db_haroon_5c8d4";
-	$ssl_ca = __DIR__ . "../../../singlestore_bundle.pem";
+	$ssl_ca = realpath(__DIR__ . "/../../singlestore_bundle.pem");
+
 
 	try {
 
