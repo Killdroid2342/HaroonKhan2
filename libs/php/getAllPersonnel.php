@@ -83,11 +83,9 @@
 	// Include the correct config file
 	require_once __DIR__ . "/config.php";
 
-	// Ensure correct header type
-	header('Content-Type: application/json; charset=UTF-8');
 	
 	// Define SSL certificate path
-	$certPath = realpath(__DIR__ . '/../../../singlestore_bundle.pem');
+	$certPath = realpath(__DIR__ . './singlestore_bundle.pem');
 	
 	if (!$certPath) {
 		die(json_encode(["error" => "SSL certificate not found at expected path."]));
