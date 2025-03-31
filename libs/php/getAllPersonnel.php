@@ -82,33 +82,36 @@
 	
 	// Include the correct config file
 	require_once __DIR__ . "/config.php";
-	
+
 	// Ensure correct header type
 	header('Content-Type: application/json; charset=UTF-8');
 	
-	// Create a MySQL connection **without** MYSQLI_CLIENT_SSL
-	$conn = new mysqli($host, $user, $password, $db, $port);
-	
-	// Apply SSL settings **before** reconnecting
+	// Define SSL certificate path
 	$certPath = realpath(__DIR__ . '/../../../singlestore_bundle.pem');
+	
 	if (!$certPath) {
-		die(json_encode(["error" => "SSL certificate not found at expected path"]));
+		die(json_encode(["error" => "SSL certificate not found at expected path."]));
 	}
 	
-	$conn->ssl_set(NULL, NULL, $certPath, NULL, NULL);
+	// Create a MySQL connection with SSL
+	$conn = new mysqli($host, $user, $password, $db, $port, MYSQLI_CLIENT_SSL);
 	
-	// Now, reconnect using SSL
-	$conn->real_connect($host, $user, $password, $db, $port, NULL, MYSQLI_CLIENT_SSL);
+	// Check if the connection is successful
+	if ($conn->connect_error) {
+		die(json_encode(["error" => "Connection failed: " . $conn->connect_error]));
+	}
 	
-	// Check if SSL is enabled
+	// Verify SSL status
 	$result = $conn->query("SHOW STATUS LIKE 'Ssl_cipher'");
 	$sslCipher = $result->fetch_assoc()['Value'] ?? null;
 	
 	if (!$sslCipher) {
-		die(json_encode(["error" => "SSL connection failed! Please check the CA bundle path and server settings."]));
+		die(json_encode(["error" => "No SSL detected. Ensure your CA bundle is valid."]));
 	}
 	
-	error_log("✅ SSL connection established using cipher: " . $sslCipher);
+	// Connection successful
+	echo json_encode(["success" => "Connected with SSL using cipher: $sslCipher"]);
+
 	
 	if ($conn->connect_errno) {
 		$output = [
