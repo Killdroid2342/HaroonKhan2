@@ -36,7 +36,7 @@ function getDepartments() {
     dataType: 'json',
     data: {},
     success: function (result) {
-      console.log(result, 'getDepartments');
+      // console.log(result, 'getDepartments');
       var departments = result['data'];
       var departmentSelect = $('._departments');
       departmentSelect.empty();
@@ -76,11 +76,11 @@ function getDepartments() {
 function getLocations() {
   $.ajax({
     type: 'GET',
-    url: 'libs/php/getAllLocations.php',
+    url: 'libs/php/getAlllocations.php',
     dataType: 'json',
     data: {},
     success: function (result) {
-      console.log(result, 'getLocations');
+      // console.log(result, 'getLocations');
       var locations = result['data'];
       var locationSelect = $('._locations');
       locationSelect.empty();
@@ -205,7 +205,7 @@ function populatePersonnelTable() {
     url: 'libs/php/getAllPersonnel.php',
     dataType: 'json',
     success: function (result) {
-      console.log(result, 'populatePersonnelTable');
+      // console.log(result, 'populatePersonnelTable');
 
       var directoryBody = $('#personnelTableBody');
       directoryBody.empty();
@@ -242,7 +242,7 @@ function populatePersonnelTable() {
           .html('<i class="fa-solid fa-pencil fa-fw"></i>')
           .appendTo(actionTD)
           .click(function () {
-            console.log('Editing personnel:', entry);
+            // console.log('Editing personnel:', entry);
 
             $('#editPersonnelModal').modal('show');
 
@@ -274,7 +274,7 @@ function populatePersonnelTable() {
                 dataType: 'json',
                 success: function (response) {
                   if (response.status.code === '200') {
-                    console.log('✅ Personnel updated successfully!');
+                    // console.log('✅ Personnel updated successfully!');
                     $('#editPersonnelModal').modal('hide');
                     populatePersonnelTable();
                   } else {
@@ -309,7 +309,7 @@ function populatePersonnelTable() {
                 url: 'libs/php/deletePersonnelByID.php',
                 data: { personnelID: personnelId },
                 success: function (response) {
-                  console.log('✅ Personnel ' + personnelId + ' deleted');
+                  // console.log('✅ Personnel ' + personnelId + ' deleted');
                   $('#deletePersonnelModal').modal('hide');
                   $('#delete' + personnelId)
                     .closest('tr')
@@ -336,7 +336,7 @@ function populateDepartmentTable() {
     dataType: 'json',
     data: {},
     success: function (result) {
-      console.log(result, 'populateDepartmentTable');
+      // console.log(result, 'populateDepartmentTable');
 
       var directoryBody = $('#departmentTableBody');
       directoryBody.empty();
@@ -361,13 +361,13 @@ function populateDepartmentTable() {
           .html('<i class="fa-solid fa-pencil fa-fw"></i>')
           .appendTo(actionTD)
           .click(function () {
-            console.log('Editing department:', entry);
+            // console.log('Editing department:', entry);
 
             $('#editDepartmentModal').modal('show');
 
             $('#editDepartmentID').val(entry.id);
             $('#editDepartmentName').val(entry.name);
-            console.log(entry);
+            // console.log(entry);
             $('#editDepartmentForm').submit(function (event) {
               event.preventDefault();
 
@@ -375,12 +375,12 @@ function populateDepartmentTable() {
               let departmentName = $('#editDepartmentName').val();
               let location = $('#editLocationName').val();
               let editLocationID = entry.locationID;
-              console.log('Sending Data:', {
-                departmentID,
-                departmentName,
-                location,
-                editLocationID,
-              });
+              //   console.log('Sending Data:', {
+              //     departmentID,
+              //     departmentName,
+              //     location,
+              //     editLocationID,
+              //   });
 
               $.ajax({
                 type: 'POST',
@@ -392,10 +392,10 @@ function populateDepartmentTable() {
                 },
                 dataType: 'json',
                 success: function (response) {
-                  console.log('Server Response:', response);
+                  //  console.log('Server Response:', response);
 
                   if (response.status.code === '200') {
-                    console.log('✅ Department updated successfully!');
+                    //   console.log('✅ Department updated successfully!');
                     $('#editDepartmentModal').modal('hide');
                     populateDepartmentTable();
                   } else {
@@ -423,10 +423,10 @@ function populateDepartmentTable() {
 
           $('#deleteDepartmentByID').val(entry.id);
           $('#deleteDepartmentBtn').on('click', function () {
-            console.log('111');
+            // console.log('111');
 
             var departmentId = entry.id;
-            console.log(departmentId, 'this is the department ID to delete');
+            //  console.log(departmentId, 'this is the department ID to delete');
 
             if (departmentId) {
               $.ajax({
@@ -434,10 +434,10 @@ function populateDepartmentTable() {
                 url: 'libs/php/deleteDepartmentByID.php',
                 data: { departmentID: departmentId },
                 success: function (response) {
-                  console.log(
-                    response,
-                    'this is response from deleteDepartmentByID.php'
-                  );
+                  //   console.log(
+                  //     response,
+                  //     'this is response from deleteDepartmentByID.php'
+                  //   );
 
                   $('#deleteDept' + departmentId)
                     .closest('tr')
@@ -453,7 +453,7 @@ function populateDepartmentTable() {
             }
           });
 
-          console.log('Department ID to delete: ', entry.id);
+          //   console.log('Department ID to delete: ', entry.id);
 
           $('#deleteDepartmentModal').modal('show');
         });
@@ -474,14 +474,14 @@ function populateLocationTable() {
     dataType: 'json',
     data: {},
     success: function (result) {
-      console.log(result);
-      console.log(result.data, 'populate location');
+      //   console.log(result);
+      //   console.log(result.data, 'populate location');
 
       var directoryBody = $('#locationTableBody');
       directoryBody.empty();
 
       result.data.forEach(function (entry) {
-        console.log(entry.name, 'this is entry');
+        // console.log(entry.name, 'this is entry');
         var row = $('<tr></tr>').addClass('content').appendTo(directoryBody);
 
         $('<td></td>').text(entry.name).appendTo(row);
@@ -494,13 +494,13 @@ function populateLocationTable() {
           .html('<i class="fa-solid fa-pencil fa-fw"></i>')
           .appendTo(actionTD)
           .click(function () {
-            console.log(entry, 'clicked entry');
+            // console.log(entry, 'clicked entry');
 
             $('#editLocationModal').modal('show');
 
             $('#editLocationID').val(entry.id);
             $('#editLocationNameModal').val(entry.name);
-            console.log(entry);
+            // console.log(entry);
 
             $('#editLocationForm')
               .off('submit')
@@ -510,7 +510,7 @@ function populateLocationTable() {
                 let locationID = $('#editLocationID').val();
                 let locationName = $('#editLocationNewName').val();
 
-                console.log('Sending Data:', { locationID, locationName });
+                // console.log('Sending Data:', { locationID, locationName });
 
                 $.ajax({
                   type: 'POST',
@@ -518,10 +518,10 @@ function populateLocationTable() {
                   data: { locationID: locationID, locationName: locationName },
                   dataType: 'json',
                   success: function (response) {
-                    console.log('Server Response:', response);
+                    // console.log('Server Response:', response);
 
                     if (response.status.code === '200') {
-                      console.log('✅ Location updated successfully!');
+                      //   console.log('✅ Location updated successfully!');
                       $('#editLocationModal').modal('hide');
                       populateLocationTable();
                     } else {
@@ -548,14 +548,14 @@ function populateLocationTable() {
             $('#deleteLocationName').text(entry.name);
             $('#deleteLocationByID').val(entry.id);
 
-            console.log('Location ID to delete: ', entry.id);
+            // console.log('Location ID to delete: ', entry.id);
 
             $('#deleteLocationModal').modal('show');
             $('#deleteLocationBtn')
               .off('click')
               .on('click', function () {
                 var locationId = entry.id;
-                console.log(locationId, 'this is the location ID to delete');
+                // console.log(locationId, 'this is the location ID to delete');
 
                 if (locationId) {
                   $.ajax({
@@ -564,10 +564,10 @@ function populateLocationTable() {
                     data: { locationID: locationId },
                     dataType: 'json',
                     success: function (response) {
-                      console.log(
-                        response,
-                        'Response from deleteLocationByID.php'
-                      );
+                      //   console.log(
+                      //     response,
+                      //     'Response from deleteLocationByID.php'
+                      //   );
 
                       if (response.status.code === '200') {
                         $('#deleteLoc' + locationId)
@@ -608,7 +608,7 @@ function getAll() {
     dataType: 'json',
     data: {},
     success: function (result) {
-      console.log(result, 'getAll');
+      //   console.log(result, 'getAll');
       var data = result['data'];
       populatePersonnelTable(data);
     },
@@ -625,7 +625,7 @@ $('#refreshBtn').click(function () {
   departmentsFetched = false;
   locationsFetched = false;
   resetAll();
-  console.log('Refreshed');
+  //   console.log('Refreshed');
 });
 
 document.querySelectorAll('.deleteDepartmentBtn').forEach((button) => {
@@ -638,7 +638,7 @@ document.querySelectorAll('.deleteDepartmentBtn').forEach((button) => {
 });
 
 let personnelData = [];
-console.log(personnelData, 'personnelData');
+// console.log(personnelData, 'personnelData');
 document.getElementById('filterBtn').addEventListener('click', function () {
   let filterModal = new bootstrap.Modal(
     document.getElementById('filterPersonnelModal')
@@ -651,7 +651,7 @@ document.getElementById('filterBtn').addEventListener('click', function () {
     dataType: 'json',
     data: {},
     success: function (result) {
-      console.log(result, 'getAll');
+      //   console.log(result, 'getAll');
       personnelData = result['data'];
 
       const departments = [
@@ -772,7 +772,7 @@ $('#addEntryForm').submit(function (event) {
     data: formData,
     dataType: 'json',
     success: function (response) {
-      console.log(response);
+      //   console.log(response);
       if (response.status.code === '200') {
         $('#addEntryModal').modal('hide');
         $('#addEntryForm')[0].reset();
